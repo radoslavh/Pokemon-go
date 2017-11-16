@@ -12,7 +12,7 @@ import CoreData
 func addAllPokemons() {
     
     createPokemon(name: "Mew", imageName: "mew")
-    createPokemon(name: "Pikatchu", imageName: "pikatchu-2")
+    createPokemon(name: "Pikachu", imageName: "pikachu-2")
     createPokemon(name: "Snorlax", imageName: "snorlax")
     createPokemon(name: "Squirtle", imageName: "squirtle")
     createPokemon(name: "Rattata", imageName: "rattata")
@@ -51,9 +51,9 @@ func getAllCaughtPokemons() -> [Pokemon] {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     do{
         let fetchRequest = Pokemon.fetchRequest() as NSFetchRequest<Pokemon>
-        fetchRequest.predicate = NSPredicate.init(format: "caught == %@", true)
+        fetchRequest.predicate = NSPredicate(format: "caught == %@", NSNumber(booleanLiteral: true))
         
-        let pokemons = try context.fetch(fetchRequest) as! [Pokemon]
+        let pokemons = try context.fetch(fetchRequest)
         
         return pokemons
     } catch {}
@@ -66,9 +66,9 @@ func getAllUnCaughtPokemons() -> [Pokemon] {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     do{
         let fetchRequest = Pokemon.fetchRequest() as NSFetchRequest<Pokemon>
-        fetchRequest.predicate = NSPredicate.init(format: "caught == %@", false)
+        fetchRequest.predicate = NSPredicate(format: "caught == %@", NSNumber(booleanLiteral: false))
         
-        let pokemons = try context.fetch(fetchRequest) as! [Pokemon]
+        let pokemons = try context.fetch(fetchRequest)
         
         return pokemons
     } catch {}

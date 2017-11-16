@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -27,20 +27,41 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         if CLLocationManager.authorizationStatus() != .authorizedWhenInUse {
             manager.requestWhenInUseAuthorization()
         } else {
+            
+            mapView.delegate = self
             mapView.showsUserLocation = true
             manager.startUpdatingLocation()
             
             Timer.scheduledTimer(withTimeInterval: 5, repeats: true
                 , block: { (timer) in
                     if let coord = self.manager.location?.coordinate {
-                        let anno = MKPointAnnotation()
-                        anno.coordinate = coord
+                        let pokemon = self.pokemons[Int(arc4random_uniform(UInt32(self.pokemons.count)))]
+                        let anno = PokeAnnotation(coord: coord, pokemon: pokemon)
+                        
                         anno.coordinate.latitude += self.randomCoordinates()
                         anno.coordinate.longitude += self.randomCoordinates()
+                        
                         self.mapView.addAnnotation(anno)
                     }
             })
         }
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let annoView = MKAnnotationView(annotation: annotation, reuseIdentifier: nil)
+        
+        if annotation is MKUserLocation {
+            annoView.image = UIImage(named: "player")
+        } else {
+            annoView.image = UIImage(named: (annotation as! PokeAnnotation).pokemon.imageName!)
+        }
+        
+        var frame = annoView.frame
+        frame.size.height = 50
+        frame.size.width = 50
+        annoView.frame = frame
+        return annoView
+        
     }
     
     func randomCoordinates() -> Double {
