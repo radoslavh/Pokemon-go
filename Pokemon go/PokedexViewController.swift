@@ -12,8 +12,15 @@ class PokedexViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
+    var caughtPokemons : [Pokemon] = []
+    var unCaughtPokemons : [Pokemon] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        caughtPokemons = getAllCaughtPokemons()
+        unCaughtPokemons = getAllUnCaughtPokemons()
+        
     }
     
     @IBAction func mapTapped(_ sender: Any) {
