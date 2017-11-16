@@ -26,7 +26,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         } else {
             mapView.showsUserLocation = true
             manager.startUpdatingLocation()
+            
+            Timer.scheduledTimer(withTimeInterval: 5, repeats: true
+                , block: { (timer) in
+                    if let coord = self.manager.location?.coordinate {
+                        let anno = MKPointAnnotation()
+                        anno.coordinate = coord
+                        anno.coordinate.latitude += self.randomCoordinates()
+                        anno.coordinate.longitude += self.randomCoordinates()
+                        self.mapView.addAnnotation(anno)
+                    }
+            })
         }
+    }
+    
+    func randomCoordinates() -> Double {
+        return (Double(arc4random_uniform(200)) - 100) / 50000.0
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -41,8 +56,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @IBAction func centerTapped(_ sender: Any) {
-        if let coord = manager.location?.coordinate{
-            let region = MKCoordinateRegionMakeWithDistance(coord, 1000, 1000)
+        if let coord = manager.location?.coordinate {
+            let region = MKCoordinateRegionMakeWithDistance(coord, 200, 200)
             mapView.setRegion(region, animated: false)
         }
     }
